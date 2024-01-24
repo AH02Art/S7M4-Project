@@ -2,43 +2,66 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import App from './App'
+import text from "../i18n/index.json";
 
 describe('Module 4 Project Tests', () => {
   describe('English Language', () => {
-    /*
-      👉 TASK 1
 
-      One test is done for you as an example.
-    */
-    test(`TEXT_HEADING_CREATE_ACCOUNT is visible`, () => {
+    let enTexts = getEntriesByKeyPrefix(text.en, "TEXT");
+    for (let [key, value] of enTexts) {
+      test(`${key} in English is visible`, () => {
+        render(<App lang="en" />);
+        expect(screen.getByText(value)).toBeVisible();
+      });
+    };
+    let enLabels = getEntriesByKeyPrefix(text.en, "LABEL");
+    for (let [key, value] of enLabels) {
+      test(`${key} in English is visible`, () => {
+        render(<App lang="en" />);
+        expect(screen.getByLabelText(value)).toBeVisible();
+      });
+    };
+    test(`PLACEHOLDER_USERNAME in English is visible`, () => {
       render(<App lang="en" />)
-      expect(screen.getByText("Create an Account")).toBeVisible()
-    })
+      expect(screen.getByPlaceholderText(text.en.PLACEHOLDER_USERNAME)).toBeVisible();
+    });
   })
-  describe('Spanish Language', () => {
-    /*
-      👉 TASK 3
 
-      This is done after making the UI multilingual.
-    */
+  describe('Spanish Language', () => {
+    
+    let espTexts = getEntriesByKeyPrefix(text.esp, "TEXT");
+    for (let [key, value] of espTexts) {
+      test(`${key} in Spanish is visible`, () => {
+        render(<App lang="esp" />);
+        expect(screen.getByText(value)).toBeVisible();
+      });
+    };
+    let espLabels = getEntriesByKeyPrefix(text.esp, "LABEL");
+    for (let [key, value] of espLabels) {
+      test(`${key} in English is visible`, () => {
+        render(<App lang="esp" />);
+        expect(screen.getByLabelText(value)).toBeVisible();
+      });
+    };
+    test(`PLACEHOLDER_USERNAME in Spanish is visible`, () => {
+      render(<App lang="esp" />)
+      expect(screen.getByPlaceholderText(text.esp.PLACEHOLDER_USERNAME)).toBeVisible();
+    });
   })
+
   describe('getEntriesByKeyPrefix', () => {
     test('can extract the correct data', () => {
-    /*
-      👉 TASK 4 part 2
-
-      Implement the function `getEntriesByKeyPrefix` below
-      and then come back here and write a few tests
-      to ensure it works as expected.
-
-      Although it should be noted that commonly,
-      the tests are written _before_ implementing
-      the function being tested.
-    */
+      const obj         = { abc_1: "data_abc_1", abc_2: "data_abc_2", xyz_1: "data_xyz_1", abc_3: "data_abc_3" };
+      const expected    = [ ["abc_1", "data_abc_1"], ["abc_2", "data_abc_2"], ["abc_3", "data_abc_3"] ];
+      const expected2   = [ [ "xyz_1", "data_xyz_1"] ];
+      expect(getEntriesByKeyPrefix(obj, "abc")).toEqual(expected);
+      expect(getEntriesByKeyPrefix(obj, "xyz")).toEqual(expected2);
+      expect(getEntriesByKeyPrefix(obj, "")).toEqual([]);
     })
   })
 })
 function getEntriesByKeyPrefix(obj, keyPrefix) {
+  return Object.entries(obj).filter(([key]) => key.split("_")[0] === keyPrefix);
   /*
     👉 TASK 4 part 1
 
